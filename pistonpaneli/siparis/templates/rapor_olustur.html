@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Yeni Rapor Oluştur{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  .page-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-header h1 {
+    margin: 0;
+    color: #333;
+  }
+  .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-warning { background-color: #f39c12; }
+  .btn-danger { background-color: #e74c3c; }
+
+  .form-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .form-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+  }
+  .form-actions {
+    margin-top: 20px;
+    text-align: right;
+  }
+  .required {
+    color: #e74c3c;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <h1>Yeni Rapor Oluştur</h1>
+    <a href="{% url 'raporlar_listesi' %}" class="btn btn-primary">Raporlar Listesine Dön</a>
+  </div>
+
+  <div class="form-container">
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="baslik">Rapor Başlığı <span class="required">*</span></label>
+        <input type="text" id="baslik" name="baslik" class="form-control" required>
+        <div class="form-text">Raporun amacını veya içeriğini tanımlayan bir başlık girin.</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="tip">Rapor Tipi <span class="required">*</span></label>
+        <select id="tip" name="tip" class="form-control" required>
+          <option value="">Rapor tipi seçin</option>
+          {% for tip_kod, tip_ad in tip_secenekleri %}
+            <option value="{{ tip_kod }}">{{ tip_ad }}</option>
+          {% endfor %}
+        </select>
+        <div class="form-text">Raporun periyodunu seçin.</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="baslangic_tarihi">Başlangıç Tarihi <span class="required">*</span></label>
+        <input type="date" id="baslangic_tarihi" name="baslangic_tarihi" class="form-control" required>
+        <div class="form-text">Raporun kapsayacağı tarih aralığının başlangıcı.</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="bitis_tarihi">Bitiş Tarihi <span class="required">*</span></label>
+        <input type="date" id="bitis_tarihi" name="bitis_tarihi" class="form-control" required>
+        <div class="form-text">Raporun kapsayacağı tarih aralığının bitişi.</div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">Rapor Oluştur</button>
+        <a href="{% url 'raporlar_listesi' %}" class="btn btn-danger">İptal</a>
+      </div>
+    </form>
+  </div>
+  
+  <div style="margin-top: 20px;">
+    <h3>Rapor Tipleri Hakkında</h3>
+    <ul>
+      <li><strong>Günlük Rapor:</strong> Belirli bir gün veya birkaç günlük süreçteki sipariş ve gelir durumunu gösterir.</li>
+      <li><strong>Haftalık Rapor:</strong> Bir hafta veya birkaç haftalık süreçteki sipariş ve gelir durumunu gösterir.</li>
+      <li><strong>Aylık Rapor:</strong> Bir ay veya birkaç aylık süreçteki sipariş ve gelir durumunu gösterir.</li>
+    </ul>
+    <p>Rapor oluşturulduktan sonra, seçilen tarih aralığındaki siparişler ve gelirler analiz edilecek ve görsel grafiklerle sunulacaktır.</p>
+  </div>
+</div>
+{% endblock %}

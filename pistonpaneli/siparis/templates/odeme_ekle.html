@@ -1,0 +1,132 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Ödeme Ekle: {{ siparis.musteri.isim }} - {{ siparis.urun_tipi }}{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .form-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .form-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .info-row {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  .info-label {
+    font-weight: bold;
+    width: 150px;
+  }
+  .info-value {
+    flex: 1;
+  }
+  .btn {
+    padding: 8px 15px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-danger { background-color: #e74c3c; }
+  
+  .payment-badge {
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: white;
+  }
+  .payment-odenmedi { background-color: #e74c3c; }
+  .payment-kismi_odendi { background-color: #f39c12; }
+  .payment-odendi { background-color: #2ecc71; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <div class="form-header">
+    <h2>Ödeme Ekle</h2>
+  </div>
+  
+  <div class="form-info">
+    <h3>Sipariş Bilgileri</h3>
+    <div class="info-row">
+      <div class="info-label">Müşteri:</div>
+      <div class="info-value">{{ siparis.musteri.isim }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Ürün:</div>
+      <div class="info-value">{{ siparis.urun_tipi }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Toplam Fiyat:</div>
+      <div class="info-value">{{ siparis.toplam_fiyat }} TL</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Ödenen Miktar:</div>
+      <div class="info-value">{{ siparis.odenen_miktar }} TL</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Kalan Ödeme:</div>
+      <div class="info-value">{{ siparis.kalan_odeme }} TL</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Ödeme Durumu:</div>
+      <div class="info-value">
+        <span class="payment-badge payment-{{ siparis.odeme_durumu }}">{{ siparis.get_odeme_durumu_display }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <form method="post">
+    {% csrf_token %}
+    
+    <div class="form-group">
+      <label for="miktar">Ödeme Miktarı (TL):</label>
+      <input type="number" id="miktar" name="miktar" class="form-control" step="0.01" min="0.01" max="{{ siparis.kalan_odeme }}" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="aciklama">Açıklama:</label>
+      <textarea id="aciklama" name="aciklama" class="form-control" rows="3"></textarea>
+    </div>
+    
+    <div class="form-group">
+      <button type="submit" class="btn btn-success">Ödeme Ekle</button>
+      <a href="{% url 'siparis_detay' siparis.id %}" class="btn btn-primary">İptal</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

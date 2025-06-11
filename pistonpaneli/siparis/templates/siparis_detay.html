@@ -1,0 +1,263 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Sipariş Detayı: {{ siparis.musteri.isim }} - {{ siparis.urun_tipi }}{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .detail-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .detail-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+  }
+  .detail-section h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+  .detail-row {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  .detail-label {
+    font-weight: bold;
+    width: 200px;
+  }
+  .detail-value {
+    flex: 1;
+  }
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: white;
+  }
+  .status-beklemede { background-color: #f39c12; }
+  .status-uretimde { background-color: #3498db; }
+  .status-tamamlandi { background-color: #2ecc71; }
+  .status-teslim_edildi { background-color: #27ae60; }
+  .status-iptal_edildi { background-color: #e74c3c; }
+
+  .payment-badge {
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: white;
+  }
+  .payment-odenmedi { background-color: #e74c3c; }
+  .payment-kismi_odendi { background-color: #f39c12; }
+  .payment-odendi { background-color: #2ecc71; }
+
+  .action-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  .action-buttons a, .action-buttons button {
+    padding: 8px 15px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-warning { background-color: #f39c12; }
+  .btn-danger { background-color: #e74c3c; }
+
+  .materials-table, .payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  .materials-table th, .materials-table td,
+  .payments-table th, .payments-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  .materials-table th, .payments-table th {
+    background-color: #f2f2f2;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+  <div class="detail-header">
+    <h2>Sipariş #{{ siparis.id }}</h2>
+    <span class="status-badge status-{{ siparis.durum }}">{{ siparis.get_durum_display }}</span>
+  </div>
+
+  <div class="detail-section">
+    <h3>Müşteri Bilgileri</h3>
+    <div class="detail-row">
+      <div class="detail-label">Müşteri:</div>
+      <div class="detail-value">{{ siparis.musteri.isim }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Firma:</div>
+      <div class="detail-value">{{ siparis.musteri.firmasi }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Telefon:</div>
+      <div class="detail-value">{{ siparis.musteri.telefon }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Adres:</div>
+      <div class="detail-value">{{ siparis.musteri.adres }}</div>
+    </div>
+  </div>
+
+  <div class="detail-section">
+    <h3>Sipariş Detayları</h3>
+    <div class="detail-row">
+      <div class="detail-label">Ürün Tipi:</div>
+      <div class="detail-value">{{ siparis.urun_tipi }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Adet:</div>
+      <div class="detail-value">{{ siparis.adet }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">İşçilik Türü:</div>
+      <div class="detail-value">{{ siparis.get_iscilik_turu_display }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Sipariş Tarihi:</div>
+      <div class="detail-value">{{ siparis.tarih|date:"d.m.Y" }}</div>
+    </div>
+    {% if siparis.teslim_tarihi %}
+    <div class="detail-row">
+      <div class="detail-label">Teslim Tarihi:</div>
+      <div class="detail-value">{{ siparis.teslim_tarihi|date:"d.m.Y" }}</div>
+    </div>
+    {% endif %}
+    <div class="detail-row">
+      <div class="detail-label">Öncelik:</div>
+      <div class="detail-value">{{ siparis.oncelik }}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Açıklama:</div>
+      <div class="detail-value">{{ siparis.aciklama }}</div>
+    </div>
+  </div>
+
+  <div class="detail-section">
+    <h3>Ödeme Bilgileri</h3>
+    <div class="detail-row">
+      <div class="detail-label">Birim Fiyat:</div>
+      <div class="detail-value">{{ siparis.birim_fiyat }} TL</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Toplam Fiyat:</div>
+      <div class="detail-value">{{ siparis.toplam_fiyat }} TL</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Ödeme Durumu:</div>
+      <div class="detail-value">
+        <span class="payment-badge payment-{{ siparis.odeme_durumu }}">{{ siparis.get_odeme_durumu_display }}</span>
+      </div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Ödenen Miktar:</div>
+      <div class="detail-value">{{ siparis.odenen_miktar }} TL</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Kalan Ödeme:</div>
+      <div class="detail-value">{{ siparis.kalan_odeme }} TL</div>
+    </div>
+
+    {% if siparis.odemeler.all %}
+    <h4>Ödeme Geçmişi</h4>
+    <table class="payments-table">
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>Miktar</th>
+          <th>Açıklama</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for odeme in siparis.odemeler.all %}
+        <tr>
+          <td>{{ odeme.tarih|date:"d.m.Y H:i" }}</td>
+          <td>{{ odeme.miktar }} TL</td>
+          <td>{{ odeme.aciklama }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+
+  {% if siparis.kullanilan_malzemeler.all %}
+  <div class="detail-section">
+    <h3>Kullanılan Malzemeler</h3>
+    <table class="materials-table">
+      <thead>
+        <tr>
+          <th>Malzeme</th>
+          <th>Miktar</th>
+          <th>Birim</th>
+          <th>Tarih</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for kullanim in siparis.kullanilan_malzemeler.all %}
+        <tr>
+          <td>{{ kullanim.malzeme.ad }}</td>
+          <td>{{ kullanim.miktar }}</td>
+          <td>{{ kullanim.malzeme.birim }}</td>
+          <td>{{ kullanim.tarih|date:"d.m.Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <div class="action-buttons">
+    <a href="{% url 'siparis_duzenle' siparis.id %}" class="btn-primary">Düzenle</a>
+    <a href="{% url 'odeme_ekle' siparis.id %}" class="btn-success">Ödeme Ekle</a>
+    <a href="{% url 'malzeme_ekle' siparis.id %}" class="btn-warning">Malzeme Kullanımı Ekle</a>
+    <a href="{% url 'siparis_pdf' siparis.id %}" class="btn-primary" style="background-color: #8e44ad;">Fatura PDF</a>
+
+    <form method="post" style="display: inline;">
+      {% csrf_token %}
+      {% if siparis.durum == 'beklemede' %}
+      <button type="submit" name="durum" value="uretimde" class="btn-warning">Üretime Al</button>
+      {% elif siparis.durum == 'uretimde' %}
+      <button type="submit" name="durum" value="tamamlandi" class="btn-success">Tamamlandı Olarak İşaretle</button>
+      {% elif siparis.durum == 'tamamlandi' %}
+      <button type="submit" name="durum" value="teslim_edildi" class="btn-success">Teslim Edildi Olarak İşaretle</button>
+      {% endif %}
+
+      {% if siparis.durum != 'iptal_edildi' %}
+      <button type="submit" name="durum" value="iptal_edildi" class="btn-danger">İptal Et</button>
+      {% endif %}
+    </form>
+
+    <a href="{% url 'siparisler_listesi' %}" class="btn-primary">Siparişler Listesine Dön</a>
+  </div>
+</div>
+{% endblock %}

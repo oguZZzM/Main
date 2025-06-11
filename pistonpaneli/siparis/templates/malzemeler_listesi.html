@@ -1,0 +1,200 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Malzemeler{% endblock %}
+
+{% block extrahead %}
+{% include "base_tabs.html" %}
+{% include "modal.html" %}
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  .page-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-header h1 {
+    margin: 0;
+    color: #333;
+  }
+  .filter-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-warning { background-color: #f39c12; }
+  .btn-danger { background-color: #e74c3c; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  table tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  .action-buttons a {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="page-header">
+    <h1>Malzemeler</h1>
+    <div style="display: flex; gap: 10px;">
+      <button onclick="openChartModal('Malzeme Türlerine Göre Stok Dağılımı', '{{ tur_chart_url }}')" class="btn" style="background-color: #9b59b6;">
+        <i class="fas fa-chart-pie"></i> Stok Dağılımı
+      </button>
+      <button onclick="openChartModal('En Çok Stoğu Olan 10 Malzeme', '{{ top_malzeme_chart_url }}')" class="btn" style="background-color: #3498db;">
+        <i class="fas fa-chart-bar"></i> Top 10 Malzeme
+      </button>
+      <a href="{% url 'malzeme_ekle' %}" class="btn btn-success">Yeni Malzeme Ekle</a>
+    </div>
+  </div>
+
+  <!-- Tabbed Interface -->
+  <div class="tabs-container" id="malzemeler-tabs">
+    <ul class="tabs">
+      <li class="tab-item" data-tab="tab-filter">Filtrele</li>
+      <li class="tab-item" data-tab="tab-table">Malzeme Listesi</li>
+    </ul>
+
+    <!-- Filter Tab -->
+    <div id="tab-filter" class="tab-content">
+      <form method="get" class="filter-form">
+        <div class="form-group">
+          <label for="arama">Arama:</label>
+          <input type="text" id="arama" name="arama" class="form-control" value="{{ aktif_arama }}" placeholder="Malzeme adı veya açıklama...">
+        </div>
+        <div class="form-group">
+          <label for="tur">Malzeme Türü:</label>
+          <select id="tur" name="tur" class="form-control">
+            <option value="">Tüm Türler</option>
+            {% for tur_kod, tur_ad in tur_secenekleri %}
+              <option value="{{ tur_kod }}">{{ tur_ad }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="sirala">Sıralama:</label>
+          <select id="sirala" name="sirala" class="form-control">
+            <option value="ad">Ada Göre (A-Z)</option>
+            <option value="-ad">Ada Göre (Z-A)</option>
+            <option value="stok_miktari">Stok Miktarı (Az-Çok)</option>
+            <option value="-stok_miktari">Stok Miktarı (Çok-Az)</option>
+            <option value="birim_fiyat">Fiyat (Düşük-Yüksek)</option>
+            <option value="-birim_fiyat">Fiyat (Yüksek-Düşük)</option>
+            <option value="tur">Türe Göre</option>
+            <option value="-son_guncelleme">Son Güncelleme</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrele</button>
+      </form>
+    </div>
+
+
+    <!-- Table Tab -->
+    <div id="tab-table" class="tab-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Malzeme Adı</th>
+            <th>Tür</th>
+            <th>Stok Miktarı</th>
+            <th>Birim</th>
+            <th>Birim Fiyat</th>
+            <th>Son Güncelleme</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for malzeme in malzemeler %}
+          <tr>
+            <td>{{ malzeme.ad }}</td>
+            <td>{{ malzeme.get_tur_display }}</td>
+            <td>{{ malzeme.stok_miktari }}</td>
+            <td>{{ malzeme.birim }}</td>
+            <td>{{ malzeme.birim_fiyat }} TL</td>
+            <td>{{ malzeme.son_guncelleme|date:"d.m.Y H:i" }}</td>
+            <td class="action-buttons">
+              <a href="{% url 'malzeme_detay' malzeme.id %}" class="btn btn-primary">Detay</a>
+              <a href="{% url 'malzeme_duzenle' malzeme.id %}" class="btn btn-warning">Düzenle</a>
+              <a href="{% url 'malzeme_sil' malzeme.id %}" class="btn btn-danger">Sil</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" style="text-align: center;">Malzeme bulunamadı.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="action-buttons" style="justify-content: center; margin-top: 20px;">
+    <a href="{% url 'home' %}" class="btn btn-primary">Ana Sayfaya Dön</a>
+    <a href="{% url 'malzeme_ekle' %}" class="btn btn-success">Yeni Malzeme Ekle</a>
+    <a href="{% url 'grafik_sayfasi' %}" class="btn" style="background-color: #8e44ad;">Grafik</a>
+  </div>
+</div>
+
+{% endblock %}

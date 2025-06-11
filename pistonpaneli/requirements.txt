@@ -1,0 +1,9 @@
+# Project dependencies
+Django>=5.2,<6.0
+django-admin-interface>=0.26.0
+django-colorfield>=0.10.0
+
+# New dependencies for improvements
+django-import-export>=3.3.1  # For data export functionality
+WeasyPrint>=60.1  # PDF generation
+django-extensions>=3.2.3  # Useful development tools

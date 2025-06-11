@@ -1,0 +1,270 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Rapor Detayı: {{ rapor.baslik }}{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  .page-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-header h1 {
+    margin: 0;
+    color: #333;
+  }
+  .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-warning { background-color: #f39c12; }
+  .btn-danger { background-color: #e74c3c; }
+
+  .report-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  .report-info p {
+    margin: 5px 0;
+  }
+  .report-info strong {
+    font-weight: bold;
+  }
+
+  .stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 200px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+  }
+  .stat-card h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+
+  .chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .chart-box {
+    flex: 1;
+    min-width: 300px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+  }
+  .chart-box h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  .chart-img {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  table tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+  }
+  .status-beklemede { background-color: #f39c12; }
+  .status-uretimde { background-color: #3498db; }
+  .status-tamamlandi { background-color: #2ecc71; }
+  .status-teslim_edildi { background-color: #27ae60; }
+  .status-iptal_edildi { background-color: #e74c3c; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <h1>{{ rapor.baslik }}</h1>
+    <div>
+      <a href="{% url 'raporlar_listesi' %}" class="btn btn-primary">Raporlar Listesine Dön</a>
+      <a href="{% url 'rapor_pdf' rapor.id %}" class="btn" style="background-color: #8e44ad;">PDF İndir</a>
+      <a href="{% url 'rapor_sil' rapor.id %}" class="btn btn-danger">Raporu Sil</a>
+    </div>
+  </div>
+
+  <div class="report-info">
+    <p><strong>Rapor Tipi:</strong> {{ rapor.get_tip_display }}</p>
+    <p><strong>Tarih Aralığı:</strong> {{ rapor.baslangic_tarihi|date:"d.m.Y" }} - {{ rapor.bitis_tarihi|date:"d.m.Y" }}</p>
+    <p><strong>Oluşturulma Tarihi:</strong> {{ rapor.olusturulma_tarihi|date:"d.m.Y H:i" }}</p>
+    <p><strong>Toplam Sipariş Sayısı:</strong> {{ rapor.toplam_siparis }}</p>
+    <p><strong>Toplam Gelir:</strong> {{ rapor.toplam_gelir }} TL</p>
+  </div>
+
+  <!-- Grafik Bölümü -->
+  <div class="chart-container">
+    <!-- Sipariş Durumu Grafiği -->
+    <div class="chart-box">
+      <h3>Sipariş Durumu Dağılımı</h3>
+      <img src="{{ durum_chart_url }}" alt="Sipariş Durumu Dağılımı" class="chart-img">
+    </div>
+
+    <!-- İşçilik Türü Grafiği -->
+    <div class="chart-box">
+      <h3>İşçilik Türü Dağılımı</h3>
+      <img src="{{ iscilik_chart_url }}" alt="İşçilik Türü Dağılımı" class="chart-img">
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <!-- Müşteri Sipariş Grafiği -->
+    <div class="chart-box">
+      <h3>En Çok Sipariş Veren Müşteriler</h3>
+      <img src="{{ musteri_chart_url }}" alt="En Çok Sipariş Veren Müşteriler" class="chart-img">
+    </div>
+
+    <!-- Gelir Grafiği -->
+    <div class="chart-box">
+      <h3>Günlük Gelir Dağılımı</h3>
+      <img src="{{ gelir_chart_url }}" alt="Günlük Gelir Dağılımı" class="chart-img">
+    </div>
+  </div>
+
+  <!-- İstatistik Kartları -->
+  <div class="stats-container">
+    <!-- Sipariş Durumu İstatistikleri -->
+    <div class="stat-card">
+      <h3>Sipariş Durumu İstatistikleri</h3>
+      <ul>
+        <li><strong>Beklemede:</strong> {{ durum_istatistikleri.beklemede|default:"0" }}</li>
+        <li><strong>Üretimde:</strong> {{ durum_istatistikleri.uretimde|default:"0" }}</li>
+        <li><strong>Tamamlandı:</strong> {{ durum_istatistikleri.tamamlandi|default:"0" }}</li>
+        <li><strong>Teslim Edildi:</strong> {{ durum_istatistikleri.teslim_edildi|default:"0" }}</li>
+        <li><strong>İptal Edildi:</strong> {{ durum_istatistikleri.iptal_edildi|default:"0" }}</li>
+      </ul>
+    </div>
+
+    <!-- İşçilik Türü İstatistikleri -->
+    <div class="stat-card">
+      <h3>İşçilik Türü İstatistikleri</h3>
+      <ul>
+        <li><strong>Taşlama:</strong> {{ iscilik_istatistikleri.taslama|default:"0" }}</li>
+        <li><strong>Krom Kaplama:</strong> {{ iscilik_istatistikleri.krom_kaplama|default:"0" }}</li>
+        <li><strong>Honlama:</strong> {{ iscilik_istatistikleri.honlama|default:"0" }}</li>
+        <li><strong>Polisaj:</strong> {{ iscilik_istatistikleri.polisaj|default:"0" }}</li>
+        <li><strong>Diğer:</strong> {{ iscilik_istatistikleri.diger|default:"0" }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Müşteri Özeti Tablosu -->
+  <h2>En Çok Sipariş Veren Müşteriler</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Müşteri</th>
+        <th>Sipariş Sayısı</th>
+        <th>Toplam Tutar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for musteri in musteri_ozeti %}
+      <tr>
+        <td>{{ musteri.musteri__isim }}</td>
+        <td>{{ musteri.toplam }}</td>
+        <td>{{ musteri.toplam_tutar }} TL</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" style="text-align: center;">Bu tarih aralığında sipariş veren müşteri bulunamadı.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Siparişler Tablosu -->
+  <h2>Siparişler</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Müşteri</th>
+        <th>Ürün Tipi</th>
+        <th>Adet</th>
+        <th>İşçilik Türü</th>
+        <th>Tarih</th>
+        <th>Durum</th>
+        <th>Toplam Fiyat</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for siparis in siparisler %}
+      <tr>
+        <td>{{ siparis.musteri.isim }}</td>
+        <td>{{ siparis.urun_tipi }}</td>
+        <td>{{ siparis.adet }}</td>
+        <td>{{ siparis.get_iscilik_turu_display }}</td>
+        <td>{{ siparis.tarih|date:"d.m.Y" }}</td>
+        <td><span class="status-badge status-{{ siparis.durum }}">{{ siparis.get_durum_display }}</span></td>
+        <td>{{ siparis.toplam_fiyat }} TL</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" style="text-align: center;">Bu tarih aralığında sipariş bulunamadı.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'raporlar_listesi' %}" class="btn btn-primary">Raporlar Listesine Dön</a>
+    <a href="{% url 'home' %}" class="btn btn-success">Ana Sayfaya Dön</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fatura #{{ siparis.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #777;
+            margin-top: 0;
+        }
+        .info-section {
+            margin-bottom: 20px;
+        }
+        .info-section h2 {
+            color: #3498db;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .info-box {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        table th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
+        .total-section {
+            text-align: right;
+            margin-top: 30px;
+        }
+        .total-row {
+            margin-bottom: 5px;
+        }
+        .total-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .total-value {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+        }
+        .grand-total {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ company_name }}</h1>
+        <p>Sipariş ve Stok Yönetim Sistemi</p>
+        <h2>FATURA</h2>
+        <p>Fatura No: {{ siparis.id }}</p>
+        <p>Tarih: {{ generated_at|date:"d.m.Y H:i" }}</p>
+    </div>
+
+    <div class="info-section">
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>Müşteri Bilgileri</h3>
+                <p><strong>Müşteri:</strong> {{ musteri.isim }}</p>
+                {% if musteri.firmasi %}<p><strong>Firma:</strong> {{ musteri.firmasi }}</p>{% endif %}
+                {% if musteri.telefon %}<p><strong>Telefon:</strong> {{ musteri.telefon }}</p>{% endif %}
+                {% if musteri.adres %}<p><strong>Adres:</strong> {{ musteri.adres }}</p>{% endif %}
+            </div>
+            <div class="info-box">
+                <h3>Sipariş Bilgileri</h3>
+                <p><strong>Sipariş No:</strong> {{ siparis.id }}</p>
+                <p><strong>Sipariş Tarihi:</strong> {{ siparis.tarih|date:"d.m.Y" }}</p>
+                <p><strong>Durum:</strong> {{ siparis.get_durum_display }}</p>
+                <p><strong>Ödeme Durumu:</strong> {{ siparis.get_odeme_durumu_display }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>Sipariş Detayları</h2>
+        <table>
+            <tr>
+                <th>Ürün</th>
+                <th>İşçilik Türü</th>
+                <th>Adet</th>
+                <th>Birim Fiyat</th>
+                <th>Toplam</th>
+            </tr>
+            <tr>
+                <td>{{ siparis.urun_tipi }}</td>
+                <td>{{ siparis.get_iscilik_turu_display }}</td>
+                <td>{{ siparis.adet }}</td>
+                <td>{{ siparis.birim_fiyat }} TL</td>
+                <td>{{ siparis.toplam_fiyat }} TL</td>
+            </tr>
+        </table>
+    </div>
+
+    {% if materials %}
+    <div class="info-section">
+        <h2>Kullanılan Malzemeler</h2>
+        <table>
+            <tr>
+                <th>Malzeme</th>
+                <th>Miktar</th>
+                <th>Birim</th>
+                <th>Birim Fiyat</th>
+                <th>Toplam</th>
+            </tr>
+            {% for material in materials %}
+            <tr>
+                <td>{{ material.malzeme.ad }}</td>
+                <td>{{ material.miktar }}</td>
+                <td>{{ material.malzeme.get_birim_display }}</td>
+                <td>{{ material.malzeme.birim_fiyat }} TL</td>
+                <td>{{ material.toplam_deger }} TL</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if payments %}
+    <div class="info-section">
+        <h2>Ödemeler</h2>
+        <table>
+            <tr>
+                <th>Tarih</th>
+                <th>Miktar</th>
+                <th>Açıklama</th>
+            </tr>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.tarih|date:"d.m.Y H:i" }}</td>
+                <td>{{ payment.miktar }} TL</td>
+                <td>{{ payment.aciklama }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="total-section">
+        <div class="total-row">
+            <span class="total-label">Toplam Tutar:</span>
+            <span class="total-value">{{ total_amount }} TL</span>
+        </div>
+        <div class="total-row">
+            <span class="total-label">Ödenen Tutar:</span>
+            <span class="total-value">{{ paid_amount }} TL</span>
+        </div>
+        <div class="total-row grand-total">
+            <span class="total-label">Kalan Tutar:</span>
+            <span class="total-value">{{ remaining_amount }} TL</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>{{ company_name }} - Sipariş ve Stok Yönetim Sistemi</p>
+        <p>Bu fatura {{ generated_at|date:"d.m.Y H:i" }} tarihinde oluşturulmuştur.</p>
+    </div>
+</body>
+</html>

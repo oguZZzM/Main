@@ -1,0 +1,460 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Piston Paneli - Ana Sayfa{% endblock %}
+
+{% block extrahead %}
+{% include "base_tabs.html" %}
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  .dashboard-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .dashboard-header h1 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  .dashboard-header p {
+    color: #666;
+    font-size: 16px;
+  }
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+    margin-bottom: 30px;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 200px;
+    margin: 15px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  .stat-card h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 16px;
+  }
+  .stat-card .stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #3498db;
+  }
+  .stat-card .stat-label {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+    margin: 20px 0;
+  }
+
+  .section {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+  }
+  .section-header {
+    background-color: #f5f5f5;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  .section-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  .section-content {
+    padding: 20px;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+  }
+  .status-beklemede { background-color: #f39c12; }
+  .status-uretimde { background-color: #3498db; }
+  .status-tamamlandi { background-color: #2ecc71; }
+  .status-teslim_edildi { background-color: #27ae60; }
+  .status-iptal_edildi { background-color: #e74c3c; }
+
+  .payment-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+  }
+  .payment-odenmedi { background-color: #e74c3c; }
+  .payment-kismi_odendi { background-color: #f39c12; }
+  .payment-odendi { background-color: #2ecc71; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  table th {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .action-buttons {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 0 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  .btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+  }
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(20, 20);
+      opacity: 0;
+    }
+  }
+  .btn-success { background-color: #2ecc71; }
+  .btn-warning { background-color: #f39c12; }
+
+  .progress-container {
+    width: 100%;
+    height: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background-color: #3498db;
+    border-radius: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Piston Paneli</h1>
+    <p>Sipariş ve stok yönetim sistemi</p>
+  </div>
+
+  <!-- Toplam İstatistikler -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <h3>Toplam Sipariş</h3>
+      <div class="stat-value">{{ toplam_istatistikler.toplam_siparis }}</div>
+    </div>
+    <div class="stat-card">
+      <h3>Bekleyen Sipariş</h3>
+      <div class="stat-value">{{ toplam_istatistikler.bekleyen_siparis }}</div>
+    </div>
+    <div class="stat-card">
+      <h3>Tamamlanan Sipariş</h3>
+      <div class="stat-value">{{ toplam_istatistikler.tamamlanan_siparis }}</div>
+    </div>
+    <div class="stat-card">
+      <h3>Toplam Ciro</h3>
+      <div class="stat-value">{{ toplam_istatistikler.toplam_ciro }} TL</div>
+    </div>
+    <div class="stat-card">
+      <h3>Tahsil Edilen</h3>
+      <div class="stat-value">{{ toplam_istatistikler.tahsil_edilen }} TL</div>
+    </div>
+  </div>
+
+  <!-- Tabbed Interface -->
+  <div class="tabs-container" id="dashboard-tabs">
+    <ul class="tabs">
+      <li class="tab-item" data-tab="tab-overview">Genel Bakış</li>
+      <li class="tab-item" data-tab="tab-orders">Siparişler</li>
+      <li class="tab-item" data-tab="tab-payments">Ödemeler</li>
+      <li class="tab-item" data-tab="tab-stock">Stok</li>
+    </ul>
+
+    <!-- Overview Tab -->
+    <div id="tab-overview" class="tab-content">
+      <!-- Sipariş Durumu Özeti -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Sipariş Durumu Özeti</h2>
+        </div>
+        <div class="section-content">
+          <div class="stats-row">
+            <div class="stat-card">
+              <h3>Beklemede</h3>
+              <div class="stat-value">{{ siparis_ozet.beklemede }}</div>
+            </div>
+            <div class="stat-card">
+              <h3>Üretimde</h3>
+              <div class="stat-value">{{ siparis_ozet.uretimde }}</div>
+            </div>
+            <div class="stat-card">
+              <h3>Tamamlandı</h3>
+              <div class="stat-value">{{ siparis_ozet.tamamlandi }}</div>
+            </div>
+            <div class="stat-card">
+              <h3>Teslim Edildi</h3>
+              <div class="stat-value">{{ siparis_ozet.teslim_edildi }}</div>
+            </div>
+            <div class="stat-card">
+              <h3>İptal Edildi</h3>
+              <div class="stat-value">{{ siparis_ozet.iptal_edildi }}</div>
+            </div>
+          </div>
+
+          <!-- Sipariş Durumu Grafiği -->
+          <div class="chart-container">
+            <img src="{{ siparis_chart_url }}" alt="Sipariş Durumu Dağılımı" style="max-width: 100%; height: auto;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Ödeme Durumu Özeti -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Ödeme Durumu Özeti</h2>
+        </div>
+        <div class="section-content">
+          <div class="stats-row">
+            <div class="stat-card">
+              <h3>Ödenmedi</h3>
+              <div class="stat-value">{{ odeme_ozet.odenmedi.adet }}</div>
+              <div class="stat-label">{{ odeme_ozet.odenmedi.tutar }} TL</div>
+            </div>
+            <div class="stat-card">
+              <h3>Kısmen Ödendi</h3>
+              <div class="stat-value">{{ odeme_ozet.kismi_odendi.adet }}</div>
+              <div class="stat-label">{{ odeme_ozet.kismi_odendi.tutar }} TL</div>
+            </div>
+            <div class="stat-card">
+              <h3>Ödendi</h3>
+              <div class="stat-value">{{ odeme_ozet.odendi.adet }}</div>
+              <div class="stat-label">{{ odeme_ozet.odendi.tutar }} TL</div>
+            </div>
+          </div>
+
+          <!-- Ödeme Durumu Grafiği -->
+          <div class="chart-container">
+            <img src="{{ odeme_chart_url }}" alt="Ödeme Durumu Analizi" style="max-width: 100%; height: auto;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div id="tab-orders" class="tab-content">
+      <div class="section">
+        <div class="section-header">
+          <h2>Son Siparişler</h2>
+        </div>
+        <div class="section-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Müşteri</th>
+                <th>Ürün</th>
+                <th>Tarih</th>
+                <th>Durum</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for siparis in son_siparisler %}
+              <tr>
+                <td>{{ siparis.musteri.isim }}</td>
+                <td>{{ siparis.urun_tipi }}</td>
+                <td>{{ siparis.tarih|date:"d.m.Y" }}</td>
+                <td><span class="status-badge status-{{ siparis.durum }}">{{ siparis.get_durum_display }}</span></td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4">Henüz sipariş bulunmuyor.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'siparisler_listesi' %}" class="btn btn-primary">Tüm Siparişleri Görüntüle</a>
+            <a href="{% url 'siparis_ekle' %}" class="btn btn-success">Yeni Sipariş Ekle</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payments Tab -->
+    <div id="tab-payments" class="tab-content">
+      <div class="section">
+        <div class="section-header">
+          <h2>Son Ödemeler</h2>
+        </div>
+        <div class="section-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Sipariş</th>
+                <th>Müşteri</th>
+                <th>Tarih</th>
+                <th>Miktar</th>
+                <th>Açıklama</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for odeme in son_odemeler %}
+              <tr>
+                <td>{{ odeme.siparis.urun_tipi }}</td>
+                <td>{{ odeme.siparis.musteri.isim }}</td>
+                <td>{{ odeme.tarih|date:"d.m.Y H:i" }}</td>
+                <td>{{ odeme.miktar }} TL</td>
+                <td>{{ odeme.aciklama }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5">Henüz ödeme kaydı bulunmuyor.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'odemeler_listesi' %}" class="btn" style="background-color: #16a085;">Tüm Ödemeleri Görüntüle</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Tab -->
+    <div id="tab-stock" class="tab-content">
+      <!-- Kritik Stok -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Kritik Stok Durumu</h2>
+        </div>
+        <div class="section-content">
+          <!-- Kritik Stok Grafiği -->
+          <div style="margin-bottom: 15px;">
+            <img src="{{ kritik_stok_chart_url }}" alt="Kritik Stok Seviyeleri" style="max-width: 100%; height: auto;">
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Malzeme</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for malzeme in kritik_stok %}
+              <tr>
+                <td>{{ malzeme.ad }}</td>
+                <td>{{ malzeme.stok_miktari }} {{ malzeme.birim }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="2">Stokta malzeme bulunmuyor.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Malzeme Türlerine Göre Stok Dağılımı -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Malzeme Türlerine Göre Stok Dağılımı</h2>
+        </div>
+        <div class="section-content">
+          <div class="chart-container">
+            <img src="{{ tur_chart_url }}" alt="Malzeme Türlerine Göre Stok Dağılımı" style="max-width: 100%; height: auto;">
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'malzemeler_listesi' %}" class="btn" style="background-color: #9b59b6;">Tüm Malzemeleri Görüntüle</a>
+            <a href="{% url 'malzeme_kullanimi_listesi' %}" class="btn" style="background-color: #34495e;">Malzeme Kullanımları</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <a href="{% url 'siparisler_listesi' %}" class="btn">Siparişleri Görüntüle</a>
+    <a href="{% url 'siparis_ekle' %}" class="btn btn-success">Yeni Sipariş Ekle</a>
+    <a href="{% url 'musteriler_listesi' %}" class="btn btn-warning">Müşterileri Görüntüle</a>
+    <a href="{% url 'malzemeler_listesi' %}" class="btn" style="background-color: #9b59b6;">Malzemeleri Görüntüle</a>
+    <a href="{% url 'malzeme_kullanimi_listesi' %}" class="btn" style="background-color: #34495e;">Malzeme Kullanımları</a>
+    <a href="{% url 'odemeler_listesi' %}" class="btn" style="background-color: #16a085;">Ödemeleri Görüntüle</a>
+    <a href="{% url 'grafik_sayfasi' %}" class="btn" style="background-color: #8e44ad;">Grafik</a>
+    <a href="{% url 'raporlar_listesi' %}" class="btn" style="background-color: #d35400;">Raporları Görüntüle</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{% endblock %}

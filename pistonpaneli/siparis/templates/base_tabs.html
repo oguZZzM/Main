@@ -1,0 +1,176 @@
+<!-- Tab structure to be included in other templates -->
+<noscript>
+  <div style="background-color: #fff3cd; color: #856404; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ffeeba;">
+    <strong>Not:</strong> JavaScript devre dışı bırakıldı. Sekme işlevselliği çalışmayacak, ancak tüm içerik aşağıda görüntülenecektir.
+  </div>
+</noscript>
+<style>
+  /* Tab styles */
+  .tabs-container {
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 2px solid #3498db;
+  }
+
+  .tab-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    margin-right: 5px;
+    border-radius: 5px 5px 0 0;
+    transition: all 0.3s ease;
+  }
+
+  .tab-item:hover {
+    background-color: #e9ecef;
+  }
+
+  .tab-item.active {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+  }
+
+  .tab-content {
+    display: block; /* Show by default for users without JavaScript */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-top: none;
+    background-color: #fff;
+    border-radius: 0 0 5px 5px;
+    margin-bottom: 20px; /* Add margin between tab contents when all are visible */
+  }
+
+  .tab-content.js-enabled {
+    display: none; /* Hide when JavaScript is enabled */
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+</style>
+
+<script>
+  // Tab functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+
+    try {
+      // Mark all tab contents as JavaScript-enabled
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('js-enabled');
+      });
+
+      // Function to activate a tab
+      function activateTab(tabContainer, tabId) {
+        console.log('Activating tab:', tabId, 'in container:', tabContainer.id);
+
+        // Hide all tab contents
+        const tabContents = tabContainer.querySelectorAll('.tab-content');
+        console.log('Found tab contents:', tabContents.length);
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+        });
+
+        // Deactivate all tabs
+        const tabs = tabContainer.querySelectorAll('.tab-item');
+        console.log('Found tabs:', tabs.length);
+        tabs.forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        // Activate the selected tab and its content
+        const selectedTab = tabContainer.querySelector(`[data-tab="${tabId}"]`);
+        const selectedContent = tabContainer.querySelector(`#${tabId}`);
+
+        console.log('Selected tab:', selectedTab ? 'Found' : 'Not found');
+        console.log('Selected content:', selectedContent ? 'Found' : 'Not found');
+
+        if (selectedTab && selectedContent) {
+          selectedTab.classList.add('active');
+          selectedContent.classList.add('active');
+          console.log('Tab activated successfully');
+        } else {
+          console.error('Failed to activate tab:', tabId);
+          // Fallback: Make all tab contents visible if we can't activate the selected tab
+          tabContents.forEach(content => {
+            content.classList.remove('js-enabled'); // Remove the js-enabled class to make the content visible
+          });
+        }
+
+        // Save the active tab to localStorage
+        const tabContainerId = tabContainer.id;
+        if (tabContainerId) {
+          localStorage.setItem(`activeTab-${tabContainerId}`, tabId);
+        }
+      }
+
+      // Initialize all tab containers
+      const tabContainers = document.querySelectorAll('.tabs-container');
+      console.log('Found tab containers:', tabContainers.length);
+
+      if (tabContainers.length === 0) {
+        console.error('No tab containers found');
+        // Fallback: Make all tab contents visible if there are no tab containers
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('js-enabled'); // Remove the js-enabled class to make the content visible
+        });
+        return;
+      }
+
+      tabContainers.forEach(container => {
+        console.log('Processing container:', container.id);
+        const tabs = container.querySelectorAll('.tab-item');
+        console.log('Found tabs in container:', tabs.length);
+
+        if (tabs.length === 0) {
+          console.error('No tabs found in container:', container.id);
+          // Fallback: Make all tab contents in this container visible if there are no tabs
+          const tabContents = container.querySelectorAll('.tab-content');
+          tabContents.forEach(content => {
+            content.classList.remove('js-enabled'); // Remove the js-enabled class to make the content visible
+          });
+          return;
+        }
+
+        // Set up click handlers for tabs
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            console.log('Tab clicked:', tabId);
+            activateTab(container, tabId);
+          });
+        });
+
+        // Activate the first tab by default or restore from localStorage
+        const containerId = container.id;
+        if (containerId && localStorage.getItem(`activeTab-${containerId}`)) {
+          // Restore active tab from localStorage
+          const activeTabId = localStorage.getItem(`activeTab-${containerId}`);
+          console.log('Restoring tab from localStorage:', activeTabId);
+          activateTab(container, activeTabId);
+        } else if (tabs.length > 0) {
+          // Activate the first tab by default
+          const firstTabId = tabs[0].getAttribute('data-tab');
+          console.log('Activating first tab:', firstTabId);
+          activateTab(container, firstTabId);
+        }
+      });
+    } catch (error) {
+      console.error('Error in tab initialization:', error);
+      // Fallback: Make all tab contents visible if there's an error
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('js-enabled'); // Remove the js-enabled class to make the content visible
+      });
+    }
+  });
+</script>

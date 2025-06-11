@@ -1,0 +1,287 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Ödemeler{% endblock %}
+
+{% block extrahead %}
+{% include "base_tabs.html" %}
+{% include "modal.html" %}
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  .page-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-header h1 {
+    margin: 0;
+    color: #333;
+  }
+  .filter-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  .btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+  }
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(20, 20);
+      opacity: 0;
+    }
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-warning { background-color: #f39c12; }
+  .btn-danger { background-color: #e74c3c; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  table tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  .action-buttons a {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .summary-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  .summary-card {
+    flex: 1;
+    min-width: 200px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+    text-align: center;
+  }
+  .summary-card h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 16px;
+  }
+  .summary-card .value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #3498db;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+    margin: 20px 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="page-header">
+    <h1>Ödemeler</h1>
+    <button onclick="openChartModal('Aylık Ödeme Analizi', '{{ odeme_chart_url }}')" class="btn" style="background-color: #16a085;">
+      <i class="fas fa-chart-bar"></i> Ödeme Grafiği
+    </button>
+  </div>
+
+  <div class="summary-cards">
+    <div class="summary-card">
+      <h3>Toplam Ödeme</h3>
+      <div class="value">{{ odemeler.count }}</div>
+    </div>
+    <div class="summary-card">
+      <h3>Toplam Tutar</h3>
+      <div class="value">{{ odemeler|dictsort:"miktar"|last|default:"0" }} TL</div>
+    </div>
+    <div class="summary-card">
+      <h3>Ortalama Ödeme</h3>
+      <div class="value">{{ odemeler|dictsort:"miktar"|last|default:"0"|floatformat:2 }} TL</div>
+    </div>
+  </div>
+
+  <!-- Tabbed Interface -->
+  <div class="tabs-container" id="odemeler-tabs">
+    <ul class="tabs">
+      <li class="tab-item" data-tab="tab-filter">Filtrele</li>
+      <li class="tab-item" data-tab="tab-table">Ödeme Listesi</li>
+    </ul>
+
+    <!-- Filter Tab -->
+    <div id="tab-filter" class="tab-content">
+      <form method="get" class="filter-form">
+        <div class="form-group">
+          <label for="arama">Arama:</label>
+          <input type="text" id="arama" name="arama" class="form-control" value="{{ aktif_arama }}" placeholder="Sipariş, müşteri veya açıklama...">
+        </div>
+        <div class="form-group">
+          <label for="siparis">Sipariş:</label>
+          <select id="siparis" name="siparis" class="form-control">
+            <option value="">Tüm Siparişler</option>
+            {% for siparis in siparisler %}
+              <option value="{{ siparis.id }}">{{ siparis.musteri.isim }} - {{ siparis.urun_tipi }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="musteri">Müşteri:</label>
+          <select id="musteri" name="musteri" class="form-control">
+            <option value="">Tüm Müşteriler</option>
+            {% for musteri in musteriler %}
+              <option value="{{ musteri.id }}">{{ musteri.isim }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="baslangic_tarih">Başlangıç Tarihi:</label>
+          <input type="date" id="baslangic_tarih" name="baslangic_tarih" class="form-control" value="{{ baslangic }}">
+        </div>
+        <div class="form-group">
+          <label for="bitis_tarih">Bitiş Tarihi:</label>
+          <input type="date" id="bitis_tarih" name="bitis_tarih" class="form-control" value="{{ bitis }}">
+        </div>
+        <div class="form-group">
+          <label for="sirala">Sıralama:</label>
+          <select id="sirala" name="sirala" class="form-control">
+            <option value="-tarih">Tarihe Göre (Yeni-Eski)</option>
+            <option value="tarih">Tarihe Göre (Eski-Yeni)</option>
+            <option value="-miktar">Miktara Göre (Çok-Az)</option>
+            <option value="miktar">Miktara Göre (Az-Çok)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrele</button>
+      </form>
+    </div>
+
+
+    <!-- Table Tab -->
+    <div id="tab-table" class="tab-content">
+      <table>
+        <thead>
+          <tr>
+            <th>Tarih</th>
+            <th>Sipariş</th>
+            <th>Müşteri</th>
+            <th>Miktar</th>
+            <th>Açıklama</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for odeme in odemeler %}
+          <tr>
+            <td>{{ odeme.tarih|date:"d.m.Y H:i" }}</td>
+            <td><a href="{% url 'siparis_detay' odeme.siparis.id %}">{{ odeme.siparis.urun_tipi }}</a></td>
+            <td>{{ odeme.siparis.musteri.isim }}</td>
+            <td>{{ odeme.miktar }} TL</td>
+            <td>{{ odeme.aciklama }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" style="text-align: center;">Ödeme kaydı bulunamadı.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="action-buttons" style="justify-content: center; margin-top: 20px;">
+    <a href="{% url 'home' %}" class="btn btn-primary">Ana Sayfaya Dön</a>
+    <a href="{% url 'siparisler_listesi' %}" class="btn btn-success">Siparişleri Görüntüle</a>
+    <a href="{% url 'grafik_sayfasi' %}" class="btn" style="background-color: #8e44ad;">Grafik</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{% endblock %}

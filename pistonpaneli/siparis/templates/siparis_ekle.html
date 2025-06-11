@@ -1,0 +1,171 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Yeni Sipariş Ekle{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .form-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .btn {
+    padding: 8px 15px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary { background-color: #3498db; }
+  .btn-success { background-color: #2ecc71; }
+  .btn-danger { background-color: #e74c3c; }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get form elements
+    const iscilikTuruSelect = document.getElementById('iscilik_turu');
+    const urunTipiInput = document.getElementById('urun_tipi');
+    const birimFiyatInput = document.getElementById('birim_fiyat');
+    const aciklamaTextarea = document.getElementById('aciklama');
+    const oncelikInput = document.getElementById('oncelik');
+
+    // Add event listener to iscilik_turu select
+    iscilikTuruSelect.addEventListener('change', function() {
+      const selectedValue = this.value;
+
+      // Auto-fill fields based on selected work type
+      if (selectedValue === 'taslama') {
+        // Silindirik Piston Taşlama
+        urunTipiInput.value = 'Piston';
+        birimFiyatInput.value = '500';
+        oncelikInput.value = '2';
+        aciklamaTextarea.value = 'Silindirik piston taşlama işlemi. Ölçüler: ';
+      } 
+      else if (selectedValue === 'krom_kaplama') {
+        // Sert Krom Kaplama
+        urunTipiInput.value = 'Piston Kolu';
+        birimFiyatInput.value = '750';
+        oncelikInput.value = '3';
+        aciklamaTextarea.value = 'Sert krom kaplama işlemi. Ölçüler: ';
+      }
+      else if (selectedValue === 'honlama') {
+        urunTipiInput.value = 'Silindir';
+        birimFiyatInput.value = '400';
+        oncelikInput.value = '1';
+        aciklamaTextarea.value = 'Honlama işlemi. Ölçüler: ';
+      }
+      else if (selectedValue === 'polisaj') {
+        urunTipiInput.value = 'Metal Parça';
+        birimFiyatInput.value = '300';
+        oncelikInput.value = '1';
+        aciklamaTextarea.value = 'Polisaj işlemi. Ölçüler: ';
+      }
+      else if (selectedValue === 'diger') {
+        urunTipiInput.value = '';
+        birimFiyatInput.value = '0';
+        oncelikInput.value = '0';
+        aciklamaTextarea.value = '';
+      }
+    });
+
+    // Auto-select "Silindirik Piston Taşlama" on page load and trigger change event
+    iscilikTuruSelect.value = 'taslama';
+    // Trigger the change event to auto-fill fields
+    const event = new Event('change');
+    iscilikTuruSelect.dispatchEvent(event);
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <div class="form-header">
+    <h2>Yeni Sipariş Ekle</h2>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="musteri">Müşteri:</label>
+      <select id="musteri" name="musteri" class="form-control" required>
+        <option value="">Müşteri Seçin</option>
+        {% for musteri in musteriler %}
+          <option value="{{ musteri.id }}">{{ musteri.isim }} {% if musteri.firmasi %}({{ musteri.firmasi }}){% endif %}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="urun_tipi">Ürün Tipi:</label>
+      <input type="text" id="urun_tipi" name="urun_tipi" class="form-control" placeholder="Örn: Piston kolu, şaft vb." required>
+    </div>
+
+    <div class="form-group">
+      <label for="adet">Adet:</label>
+      <input type="number" id="adet" name="adet" class="form-control" value="1" min="1" required>
+    </div>
+
+    <div class="form-group">
+      <label for="iscilik_turu">İşçilik Türü:</label>
+      <select id="iscilik_turu" name="iscilik_turu" class="form-control" required>
+        <option value="">İşçilik Türü Seçin</option>
+        <option value="taslama">Silindirik Piston Taşlama</option>
+        <option value="krom_kaplama">Sert Krom Kaplama</option>
+        <option value="honlama">Honlama</option>
+        <option value="polisaj">Polisaj</option>
+        <option value="diger">Diğer İşlemler</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="birim_fiyat">Birim Fiyat (TL):</label>
+      <input type="number" id="birim_fiyat" name="birim_fiyat" class="form-control" value="0" min="0" step="0.01">
+    </div>
+
+    <div class="form-group">
+      <label for="oncelik">Öncelik:</label>
+      <input type="number" id="oncelik" name="oncelik" class="form-control" value="0" min="0">
+      <small>Yüksek değerler daha öncelikli</small>
+    </div>
+
+    <div class="form-group">
+      <label for="aciklama">Açıklama:</label>
+      <textarea id="aciklama" name="aciklama" class="form-control" rows="4" placeholder="Ekstra bilgiler ve ölçüler (ölçü, çap, uzunluk vb.)"></textarea>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-success">Sipariş Ekle</button>
+      <a href="{% url 'siparisler_listesi' %}" class="btn btn-primary">İptal</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
