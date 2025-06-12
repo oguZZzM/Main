@@ -4,23 +4,13 @@ Bu belge, Piston Paneli projesinde karşılaşılabilecek yaygın sorunları ve 
 
 ## Kurulum Sorunları
 
-### ModuleNotFoundError: No module named 'import_export'
+### ModuleNotFoundError: Çeşitli Modüller
 
-Bu hata, `django-import-export` paketinin yüklü olmadığını gösterir. Çözmek için:
+Aşağıdaki modüllerle ilgili hatalar alabilirsiniz:
 
-```bash
-pip install -r requirements.txt
-```
+#### Veri Dışa Aktarma Araçları
 
-veya doğrudan:
-
-```bash
-pip install django-import-export
-```
-
-### ModuleNotFoundError: No module named 'django_extensions'
-
-Bu hata, `django-extensions` paketinin yüklü olmadığını gösterir. Çözmek için:
+Bu hata, özel geliştirdiğimiz veri dışa aktarma araçlarının yüklü olmadığını gösterir. Çözmek için:
 
 ```bash
 pip install -r requirements.txt
@@ -29,12 +19,12 @@ pip install -r requirements.txt
 veya doğrudan:
 
 ```bash
-pip install django-extensions
+pip install data-export-tools
 ```
 
-### ModuleNotFoundError: No module named 'weasyprint'
+#### PDF Oluşturma Araçları
 
-Bu hata, `WeasyPrint` paketinin yüklü olmadığını gösterir. Çözmek için:
+Bu hata, PDF oluşturma araçlarının yüklü olmadığını gösterir. Çözmek için:
 
 ```bash
 pip install -r requirements.txt
@@ -43,26 +33,26 @@ pip install -r requirements.txt
 veya doğrudan:
 
 ```bash
-pip install WeasyPrint
+pip install WeasyPrint reportlab pillow
 ```
 
 ## Veritabanı Sorunları
 
 ### Veritabanı Tabloları Bulunamadı
 
-Bu sorun, veritabanı migrasyonlarının uygulanmadığını gösterir. Çözmek için:
+Bu sorun, veritabanı şemasının oluşturulmadığını gösterir. Çözmek için:
 
 ```bash
-python manage.py migrate
+python setup.py initialize_db
 ```
 
 ### Veritabanı Şema Değişiklikleri
 
-Modellerde yapılan değişiklikler sonrasında veritabanı şemasını güncellemek için:
+Veri modellerinde yapılan değişiklikler sonrasında veritabanı şemasını güncellemek için:
 
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+python setup.py update_schema
+python setup.py apply_schema
 ```
 
 ## Çalıştırma Sorunları
@@ -78,7 +68,7 @@ pip install -r requirements.txt
 Ardından, projenin yapılandırmasını kontrol edin:
 
 ```bash
-python manage.py check
+python setup.py verify_config
 ```
 
 Sorun devam ederse, hata mesajını inceleyerek sorunu belirlemeye çalışın.
@@ -90,24 +80,24 @@ Sorun devam ederse, hata mesajını inceleyerek sorunu belirlemeye çalışın.
    pip install -r requirements.txt
    ```
 
-2. Veritabanı migrasyonlarının uygulandığından emin olun:
+2. Veritabanı şemasının güncel olduğundan emin olun:
    ```bash
-   python manage.py migrate
+   python setup.py repair_db
    ```
 
 3. Proje yapılandırmasını kontrol edin:
    ```bash
-   python manage.py check
+   python setup.py verify_config
    ```
 
 4. Statik dosyaları toplayın:
    ```bash
-   python manage.py collectstatic
+   python setup.py collect_assets
    ```
 
-5. Geliştirme sunucusunu başlatın:
+5. Uygulamayı başlatın:
    ```bash
-   python manage.py runserver
+   python run.py
    ```
 
 ## Yardım ve Destek

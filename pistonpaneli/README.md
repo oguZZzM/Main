@@ -29,37 +29,37 @@ source venv/bin/activate  # Windows'ta: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. Migrasyonları uygulayın:
+4. Veritabanını hazırlayın:
 ```bash
-python manage.py migrate
+python setup.py initialize_db
 ```
 
-5. Bir süper kullanıcı oluşturun:
+5. Bir yönetici kullanıcı oluşturun:
 ```bash
-python manage.py createsuperuser
+python setup.py create_admin
 ```
 
-6. Geliştirme sunucusunu çalıştırın:
+6. Uygulamayı başlatın:
 ```bash
-python manage.py runserver
+python run.py
 ```
 
-7. Admin arayüzüne http://127.0.0.1:8000/admin/ adresinden erişin
+7. Özel tasarladığımız yönetim paneline http://127.0.0.1:8000/admin/ adresinden erişin
 
 ## Sorun Giderme
 
 Yaygın sorunlar ve çözümleri için lütfen [Sorun Giderme Kılavuzu](TROUBLESHOOTING.md)'na bakın.
 
 Yaygın sorunlar şunları içerir:
-- Eksik bağımlılıklar (import_export, django_extensions, weasyprint)
-- Veritabanı migrasyon sorunları
+- Eksik bağımlılıklar (weasyprint, reportlab, pillow)
+- Veritabanı bağlantı sorunları
 - Sunucu başlatma sorunları
 
 Çoğu sorun için hızlı çözüm:
 ```bash
 pip install -r requirements.txt
-python manage.py migrate
-python manage.py collectstatic
+python setup.py repair_db
+python setup.py collect_assets
 ```
 
 ## Özellikler

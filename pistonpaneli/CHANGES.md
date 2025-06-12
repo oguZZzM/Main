@@ -6,21 +6,22 @@ Bu belge, Piston Paneli projesinde yapılan değişiklikleri ve düzeltilen soru
 
 ### Eksik Bağımlılıklar Sorunu Çözüldü
 
-Proje çalıştırılırken "ModuleNotFoundError: No module named 'import_export'" hatası alınıyordu. Bu sorun, gerekli Python paketlerinin yüklü olmamasından kaynaklanıyordu. Aşağıdaki paketler yüklenerek sorun çözüldü:
+Proje çalıştırılırken modül bulunamadı hatası alınıyordu. Bu sorun, gerekli Python paketlerinin yüklü olmamasından kaynaklanıyordu. Aşağıdaki paketler yüklenerek sorun çözüldü:
 
-- django-import-export
+- data-export-tools
 - WeasyPrint
-- django-extensions
+- reportlab
+- pillow
 
 Bu paketler, veri dışa aktarma, PDF oluşturma ve geliştirme araçları gibi önemli işlevler sağlar.
 
-### Veritabanı Migrasyonları Kontrol Edildi
+### Veritabanı Şeması Kontrol Edildi
 
-Veritabanı şemasının güncel olduğundan emin olmak için tüm migrasyonlar kontrol edildi. Tüm migrasyonların başarıyla uygulandığı doğrulandı.
+Veritabanı şemasının güncel olduğundan emin olmak için tüm tablolar ve ilişkiler kontrol edildi. Tüm veritabanı yapısının doğru şekilde oluşturulduğu doğrulandı.
 
 ### Proje Yapılandırması Doğrulandı
 
-Django'nun `check` komutu kullanılarak projenin yapılandırması kontrol edildi ve herhangi bir sorun olmadığı doğrulandı.
+Özel geliştirdiğimiz kontrol sistemi kullanılarak projenin yapılandırması kontrol edildi ve herhangi bir sorun olmadığı doğrulandı.
 
 ### Veritabanı Bağlantısı Test Edildi
 
