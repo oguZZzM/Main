@@ -1,7 +1,7 @@
 # Project dependencies
 Django>=5.2,<6.0
-django-admin-interface>=0.26.0
 django-colorfield>=0.10.0
+django-jazzmin>=3.0.1  # Admin panel theme
 
 # New dependencies for improvements
 django-import-export>=3.3.1  # For data export functionality

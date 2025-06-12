@@ -9,5 +9,5 @@ urlpatterns = [
     path('', root_redirect),
     path('admin/', admin.site.urls),
     path('', include('siparis.urls')),
-
+    path('i18n/', include('django.conf.urls.i18n')),  # Add internationalization URLs
 ]

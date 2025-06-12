@@ -44,4 +44,9 @@ urlpatterns = [
     # PDF URL'leri
     path('siparis/<int:siparis_id>/pdf/', views.siparis_pdf, name='siparis_pdf'),
     path('rapor/<int:rapor_id>/pdf/', views.rapor_pdf, name='rapor_pdf'),
+
+    # Footer sayfaları
+    path('yardim/', views.yardim, name='yardim'),
+    path('gizlilik-politikasi/', views.gizlilik_politikasi, name='gizlilik_politikasi'),
+    path('iletisim/', views.iletisim, name='iletisim'),
 ]

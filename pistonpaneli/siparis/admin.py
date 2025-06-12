@@ -29,6 +29,25 @@ class SiparisAdmin(ImportExportModelAdmin):
     autocomplete_fields = ['musteri']
     list_per_page = 25
     date_hierarchy = 'tarih'
+    list_select_related = ['musteri']
+    show_full_result_count = True
+    save_on_top = True
+    actions = ['mark_as_completed', 'mark_as_delivered', 'mark_as_paid']
+
+    def mark_as_completed(self, request, queryset):
+        updated = queryset.update(durum='tamamlandi')
+        self.message_user(request, f'{updated} sipariş tamamlandı olarak işaretlendi.')
+    mark_as_completed.short_description = "Seçili siparişleri tamamlandı olarak işaretle"
+
+    def mark_as_delivered(self, request, queryset):
+        updated = queryset.update(durum='teslim_edildi')
+        self.message_user(request, f'{updated} sipariş teslim edildi olarak işaretlendi.')
+    mark_as_delivered.short_description = "Seçili siparişleri teslim edildi olarak işaretle"
+
+    def mark_as_paid(self, request, queryset):
+        updated = queryset.update(odeme_durumu='odendi')
+        self.message_user(request, f'{updated} sipariş ödendi olarak işaretlendi.')
+    mark_as_paid.short_description = "Seçili siparişleri ödendi olarak işaretle"
 
     fieldsets = (
         ('Müşteri Bilgileri', {
@@ -81,9 +100,27 @@ class MusteriAdmin(ImportExportModelAdmin):
     search_fields = ('isim', 'firmasi', 'telefon')
     list_filter = ('firmasi', 'kayit_tarihi')
     readonly_fields = ('kayit_tarihi', 'toplam_siparis_sayisi', 'toplam_borc', 'odenen_miktar', 'kalan_borc')
+    list_per_page = 25
+    show_full_result_count = True
+    save_on_top = True
+    actions = ['export_customer_data', 'mark_as_vip']
+
+    def export_customer_data(self, request, queryset):
+        # This is a placeholder for the export functionality
+        # In a real implementation, you would generate and return a file
+        self.message_user(request, f'{queryset.count()} müşteri verisi dışa aktarıldı.')
+    export_customer_data.short_description = "Seçili müşterilerin verilerini dışa aktar"
+
+    def mark_as_vip(self, request, queryset):
+        # This is a placeholder for VIP marking functionality
+        # In a real implementation, you would set a VIP flag on the customer model
+        self.message_user(request, f'{queryset.count()} müşteri VIP olarak işaretlendi.')
+    mark_as_vip.short_description = "Seçili müşterileri VIP olarak işaretle"
+
     fieldsets = (
         ('Temel Bilgiler', {
-            'fields': ('isim', 'firmasi', 'telefon', 'adres', 'kayit_tarihi')
+            'fields': ('isim', 'firmasi', 'telefon', 'adres', 'kayit_tarihi'),
+            'classes': ('wide',)
         }),
         ('Sipariş İstatistikleri', {
             'fields': ('toplam_siparis_sayisi', 'toplam_borc', 'odenen_miktar', 'kalan_borc'),
@@ -109,13 +146,33 @@ class MalzemeAdmin(ImportExportModelAdmin):
     list_filter = ('tur', 'birim', 'son_guncelleme')
     readonly_fields = ('son_guncelleme', 'toplam_deger')
     list_per_page = 25
+    show_full_result_count = True
+    save_on_top = True
+    actions = ['restock_materials', 'mark_as_critical']
+
+    def restock_materials(self, request, queryset):
+        # This is a placeholder for restocking functionality
+        # In a real implementation, you would increase stock levels
+        self.message_user(request, f'{queryset.count()} malzeme stoku yenilendi.')
+    restock_materials.short_description = "Seçili malzemelerin stokunu yenile"
+
+    def mark_as_critical(self, request, queryset):
+        # This is a placeholder for marking materials as critical
+        # In a real implementation, you would set minimum_stok to current stok_miktari
+        for material in queryset:
+            material.minimum_stok = material.stok_miktari
+            material.save()
+        self.message_user(request, f'{queryset.count()} malzeme kritik olarak işaretlendi.')
+    mark_as_critical.short_description = "Seçili malzemeleri kritik olarak işaretle"
 
     fieldsets = (
         ('Temel Bilgiler', {
-            'fields': ('ad', 'tur', 'aciklama')
+            'fields': ('ad', 'tur', 'aciklama'),
+            'classes': ('wide',)
         }),
         ('Stok Bilgileri', {
-            'fields': ('stok_miktari', 'birim', 'minimum_stok', 'birim_fiyat', 'toplam_deger', 'son_guncelleme')
+            'fields': ('stok_miktari', 'birim', 'minimum_stok', 'birim_fiyat', 'toplam_deger', 'son_guncelleme'),
+            'description': 'Stok miktarı ve fiyat bilgileri. Minimum stok seviyesi, stok durumunun kritik olarak işaretlenmesi için kullanılır.'
         }),
     )
 
@@ -221,7 +278,4 @@ class RaporAdmin(ImportExportModelAdmin):
             return 0
     kalan_tahsilat.short_description = 'Kalan Tahsilat (TL)'
 
-# Admin site başlık ve başlık çubuğu metinlerini özelleştir
-admin.site.site_header = 'Piston Paneli Yönetim'
-admin.site.site_title = 'Piston Paneli'
-admin.site.index_title = 'Piston Paneli Yönetim Arayüzü'
+

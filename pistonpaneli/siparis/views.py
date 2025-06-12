@@ -1197,3 +1197,21 @@ def rapor_pdf(request, rapor_id):
     """
     rapor = get_object_or_404(Rapor, id=rapor_id)
     return generate_report_pdf(rapor)
+
+def yardim(request):
+    """
+    Yardım sayfasını gösterir.
+    """
+    return render(request, "yardim.html")
+
+def gizlilik_politikasi(request):
+    """
+    Gizlilik politikası sayfasını gösterir.
+    """
+    return render(request, "gizlilik_politikasi.html")
+
+def iletisim(request):
+    """
+    İletişim sayfasını gösterir.
+    """
+    return render(request, "iletisim.html")
