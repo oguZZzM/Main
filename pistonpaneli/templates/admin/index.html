@@ -1,0 +1,144 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="welcome-banner mb-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0">
+                <i class="fas fa-tachometer-alt mr-2"></i>{% trans "Piston Paneli'ne Hoş Geldiniz" %}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="welcome-message mb-4">
+                <p class="lead">{% trans "Bu panel, siparişlerinizi, müşterilerinizi ve malzemelerinizi yönetmenize yardımcı olur." %}</p>
+                <p>{% trans "Hızlı erişim için aşağıdaki bağlantıları kullanabilirsiniz:" %}</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-4 dashboard-widget">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-primary text-white mb-3">
+                                <i class="fas fa-clipboard-list fa-2x"></i>
+                            </div>
+                            <h4 class="card-title">{% trans "Siparişler" %}</h4>
+                            <p class="card-text text-muted">{% trans "Tüm siparişleri görüntüleyin ve yönetin." %}</p>
+                            <a href="{% url 'admin:siparis_siparis_changelist' %}" class="btn btn-primary btn-block mt-3">
+                                <i class="fas fa-arrow-right mr-1"></i> {% trans "Siparişlere Git" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4 dashboard-widget">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-success text-white mb-3">
+                                <i class="fas fa-user-tie fa-2x"></i>
+                            </div>
+                            <h4 class="card-title">{% trans "Müşteriler" %}</h4>
+                            <p class="card-text text-muted">{% trans "Müşteri bilgilerini görüntüleyin ve düzenleyin." %}</p>
+                            <a href="{% url 'admin:siparis_musteri_changelist' %}" class="btn btn-success btn-block mt-3">
+                                <i class="fas fa-arrow-right mr-1"></i> {% trans "Müşterilere Git" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4 dashboard-widget">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="icon-circle bg-warning text-white mb-3">
+                                <i class="fas fa-boxes fa-2x"></i>
+                            </div>
+                            <h4 class="card-title">{% trans "Malzemeler" %}</h4>
+                            <p class="card-text text-muted">{% trans "Stok durumunu kontrol edin ve malzemeleri yönetin." %}</p>
+                            <a href="{% url 'admin:siparis_malzeme_changelist' %}" class="btn btn-warning btn-block mt-3 text-white">
+                                <i class="fas fa-arrow-right mr-1"></i> {% trans "Malzemelere Git" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4 dashboard-widget">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-circle bg-info text-white mr-3">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <h4 class="card-title mb-0">{% trans "Raporlar" %}</h4>
+                            </div>
+                            <p class="card-text text-muted">{% trans "Satış ve stok raporlarını görüntüleyin ve analiz edin." %}</p>
+                            <a href="{% url 'admin:siparis_rapor_changelist' %}" class="btn btn-info btn-sm">
+                                {% trans "Raporlara Git" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4 dashboard-widget">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-circle bg-danger text-white mr-3">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <h4 class="card-title mb-0">{% trans "Ödemeler" %}</h4>
+                            </div>
+                            <p class="card-text text-muted">{% trans "Ödeme bilgilerini görüntüleyin ve yönetin." %}</p>
+                            <a href="{% url 'admin:siparis_odeme_changelist' %}" class="btn btn-danger btn-sm">
+                                {% trans "Ödemelere Git" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .welcome-banner {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .dashboard-widget {
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-widget:hover {
+        transform: translateY(-10px);
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .card-header {
+        border-radius: 12px 12px 0 0 !important;
+    }
+</style>
+
+{{ block.super }}
+{% endblock %}

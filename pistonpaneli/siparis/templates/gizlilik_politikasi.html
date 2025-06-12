@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizlilik Politikası - Piston Paneli</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2563eb;
+            margin-top: 30px;
+        }
+        .card {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gizlilik Politikası</h1>
+    
+    <div class="card">
+        <h2>Giriş</h2>
+        <p>Piston Paneli olarak, müşterilerimizin ve kullanıcılarımızın gizliliğine saygı duyuyoruz. Bu gizlilik politikası, hizmetlerimizi kullanırken topladığımız, kullandığımız ve koruduğumuz bilgileri açıklamaktadır.</p>
+        <p>Bu politika, Piston Paneli yönetim sistemini kullanımınız sırasında geçerlidir. Lütfen bu politikayı dikkatlice okuyun.</p>
+    </div>
+    
+    <div class="card">
+        <h2>Topladığımız Bilgiler</h2>
+        <p>Piston Paneli, aşağıdaki bilgileri toplayabilir:</p>
+        <ul>
+            <li><strong>Kişisel Bilgiler:</strong> Ad, soyad, e-posta adresi, telefon numarası gibi iletişim bilgileri.</li>
+            <li><strong>Müşteri Bilgileri:</strong> Müşterilerinizin adı, adresi, telefon numarası ve diğer iletişim bilgileri.</li>
+            <li><strong>Sipariş Bilgileri:</strong> Ürün türü, miktar, fiyat, ödeme durumu gibi sipariş detayları.</li>
+            <li><strong>Kullanım Verileri:</strong> Sistemi nasıl kullandığınıza dair bilgiler, oturum süreleri, tıklama verileri.</li>
+            <li><strong>Cihaz Bilgileri:</strong> IP adresi, tarayıcı türü, işletim sistemi gibi teknik bilgiler.</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Bilgilerin Kullanımı</h2>
+        <p>Topladığımız bilgileri aşağıdaki amaçlar için kullanabiliriz:</p>
+        <ul>
+            <li>Hizmetlerimizi sağlamak ve yönetmek</li>
+            <li>Müşteri desteği sunmak</li>
+            <li>Sistemimizi geliştirmek ve optimize etmek</li>
+            <li>Güvenlik ve dolandırıcılık önleme</li>
+            <li>Yasal yükümlülüklere uymak</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Bilgilerin Paylaşımı</h2>
+        <p>Kişisel bilgilerinizi aşağıdaki durumlar dışında üçüncü taraflarla paylaşmayız:</p>
+        <ul>
+            <li>Yasal bir zorunluluk olduğunda (mahkeme kararı, yasal süreç)</li>
+            <li>Hizmetlerimizi sağlamak için gerekli olduğunda (ödeme işlemcileri, bulut hizmetleri)</li>
+            <li>Açık izniniz olduğunda</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Veri Güvenliği</h2>
+        <p>Bilgilerinizi korumak için uygun teknik ve organizasyonel önlemler alıyoruz. Bu önlemler arasında şifreleme, güvenli sunucular, düzenli güvenlik değerlendirmeleri ve personel eğitimi bulunmaktadır.</p>
+        <p>Ancak, internet üzerinden hiçbir veri iletiminin veya depolamasının %100 güvenli olmadığını unutmayın.</p>
+    </div>
+    
+    <div class="card">
+        <h2>Veri Saklama</h2>
+        <p>Kişisel bilgilerinizi, hizmetlerimizi sağlamak için gerekli olduğu sürece veya yasal yükümlülüklerimizi yerine getirmek için gereken süre boyunca saklarız.</p>
+    </div>
+    
+    <div class="card">
+        <h2>Haklarınız</h2>
+        <p>Kişisel verilerinizle ilgili olarak aşağıdaki haklara sahipsiniz:</p>
+        <ul>
+            <li>Verilerinize erişim talep etme</li>
+            <li>Verilerinizin düzeltilmesini talep etme</li>
+            <li>Verilerinizin silinmesini talep etme</li>
+            <li>Veri işlememizi kısıtlama</li>
+            <li>Veri taşınabilirliği</li>
+            <li>İtiraz etme hakkı</li>
+        </ul>
+        <p>Bu haklarınızı kullanmak için lütfen <a href="{% url 'iletisim' %}">İletişim</a> sayfamızdan bizimle iletişime geçin.</p>
+    </div>
+    
+    <div class="card">
+        <h2>Politika Değişiklikleri</h2>
+        <p>Bu gizlilik politikasını zaman zaman güncelleyebiliriz. Önemli değişiklikler olduğunda, sizi bilgilendireceğiz.</p>
+        <p>Son güncelleme tarihi: {% now "d.m.Y" %}</p>
+    </div>
+    
+    <a href="{% url 'admin:index' %}" class="back-link">← Yönetim Paneline Dön</a>
+</body>
+</html>

@@ -1,0 +1,213 @@
+{% extends "admin/login.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    body.login {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .login #container {
+        background-color: white;
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        padding: 40px;
+        max-width: 420px;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login #container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(to right, #3b82f6, #f43f5e);
+    }
+
+    .login #header {
+        padding: 0 0 20px;
+        background: transparent;
+        box-shadow: none;
+        text-align: center;
+    }
+
+    .login #header h1 {
+        font-size: 28px;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        color: #1e3a8a;
+        font-weight: 600;
+    }
+
+    .login #header h1 a {
+        text-decoration: none;
+        color: #1e3a8a;
+        display: inline-block;
+        position: relative;
+    }
+
+    .login #header h1 a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(to right, #3b82f6, #f43f5e);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .login #header h1 a:hover::after {
+        transform: scaleX(1);
+    }
+
+    .login #content {
+        padding: 0;
+    }
+
+    .login .form-row {
+        padding: 12px 0;
+        border-bottom: none;
+        position: relative;
+    }
+
+    .login .form-row label {
+        display: block;
+        padding: 0 0 8px;
+        color: #1e293b;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .login .form-row #id_username, .login .form-row #id_password {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .login .form-row #id_username:focus, .login .form-row #id_password:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        outline: none;
+    }
+
+    .login .submit-row {
+        padding: 25px 0 0;
+        text-align: center;
+        border-top: none;
+        background: transparent;
+    }
+
+    .login .submit-row input {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(to right, #3b82f6, #60a5fa);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+    }
+
+    .login .submit-row input:hover {
+        background: linear-gradient(to right, #2563eb, #3b82f6);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .login .submit-row input:active {
+        transform: translateY(0);
+    }
+
+    .login .errornote {
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+        background-color: #fee2e2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        font-weight: 500;
+    }
+
+    .login .messagelist {
+        margin: 0 0 25px;
+        padding: 0;
+    }
+
+    .login .messagelist li {
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .login .messagelist li.success {
+        background-color: #dcfce7;
+        border: 1px solid #bbf7d0;
+        color: #15803d;
+    }
+
+    .login .messagelist li.warning {
+        background-color: #fef9c3;
+        border: 1px solid #fef08a;
+        color: #854d0e;
+    }
+
+    .login .messagelist li.error {
+        background-color: #fee2e2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+    }
+
+    .login #footer {
+        text-align: center;
+        padding: 25px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        Piston Paneli - Yönetim Sistemi
+    </a>
+</h1>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+<div id="footer">
+    <p>Piston Paneli &copy; {% now "Y" %} - Tüm hakları saklıdır.</p>
+</div>
+{% endblock %}

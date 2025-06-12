@@ -1,0 +1,223 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    /* Custom styles for the admin interface */
+    :root {
+        --primary: #1e3a8a;
+        --secondary: #3b82f6;
+        --accent: #f43f5e;
+        --primary-fg: #fff;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+    }
+
+    /* Custom header styles */
+    #header {
+        background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+        color: var(--primary-fg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Custom sidebar styles */
+    .sidebar {
+        background: linear-gradient(180deg, var(--primary) 0%, #1e40af 100%);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar .nav-item .nav-link {
+        color: rgba(255, 255, 255, 0.85);
+        border-radius: 6px;
+        margin: 4px 8px;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-item .nav-link:hover {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: translateX(3px);
+    }
+
+    .sidebar .nav-item .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-weight: 500;
+    }
+
+    /* Custom button styles */
+    .btn-primary {
+        background: linear-gradient(to right, var(--secondary), #60a5fa);
+        border: none;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(to right, #2563eb, #3b82f6);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-success {
+        background: linear-gradient(to right, var(--success), #34d399);
+        border: none;
+        box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(to right, #059669, #10b981);
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background: linear-gradient(to right, var(--danger), #f87171);
+        border: none;
+        box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(to right, #dc2626, #ef4444);
+        transform: translateY(-2px);
+    }
+
+    /* Custom card styles */
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+        background-color: rgba(0, 0, 0, 0.02);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px 12px 0 0 !important;
+        padding: 15px 20px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    /* Custom form styles */
+    .form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    /* Custom table styles */
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .table thead th {
+        background: linear-gradient(to right, #f8fafc, #f1f5f9);
+        border-bottom: 2px solid #e2e8f0;
+        padding: 12px 15px;
+        font-weight: 600;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+
+    /* Custom breadcrumb styles */
+    .breadcrumb {
+        background-color: transparent;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        font-size: 18px;
+        line-height: 1;
+        vertical-align: middle;
+    }
+
+    /* Custom footer styles */
+    .footer {
+        background: linear-gradient(to right, #f8fafc, #f1f5f9);
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+        border-top: 1px solid #e2e8f0;
+        font-size: 0.9rem;
+    }
+
+    /* Dashboard widgets */
+    .dashboard-widget {
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-widget:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .content-wrapper {
+        animation: fadeIn 0.5s ease-out;
+    }
+</style>
+{% endblock %}
+
+{% block usertools %}
+<div class="user-tools d-flex align-items-center">
+    <div class="welcome-message mr-3">
+        <span>Hoş geldiniz, {{ request.user.get_full_name|default:request.user.username }}!</span>
+    </div>
+    {{ block.super }}
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-cogs mr-2" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <h5 class="mb-0">Piston Paneli</h5>
+                </div>
+                <p class="text-muted">Sipariş ve stok yönetim sistemi</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <p>&copy; {% now "Y" %} Piston Paneli - Tüm hakları saklıdır.</p>
+            </div>
+            <div class="col-md-4 text-right">
+                <p><a href="{% url 'yardim' %}" class="text-decoration-none">Kullanım Kılavuzu</a> | <a href="{% url 'iletisim' %}" class="text-decoration-none">Teknik Destek</a></p>
+                <p class="text-muted">Sürüm 1.0.0</p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}

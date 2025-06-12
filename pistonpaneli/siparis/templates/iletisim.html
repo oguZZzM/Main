@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teknik Destek - Piston Paneli</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2563eb;
+            margin-top: 30px;
+        }
+        .card {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .contact-item {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .contact-item h3 {
+            margin-top: 0;
+            color: #1e3a8a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        .contact-form {
+            display: grid;
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .map-container {
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teknik Destek</h1>
+
+    <div class="card">
+        <h2>Teknik Destek Hizmeti</h2>
+        <p>Sistem kullanımı sırasında karşılaştığınız sorunlar için aşağıdaki teknik destek kanallarını kullanabilir veya destek formu doldurabilirsiniz.</p>
+
+        <div class="contact-info">
+            <div class="contact-item">
+                <h3>Teknik Destek Ekibi</h3>
+                <p><strong>Telefon:</strong> +90 (212) 123 45 68</p>
+                <p><strong>E-posta:</strong> destek@pistonpaneli.com</p>
+                <p><strong>Çalışma Saatleri:</strong> Pazartesi - Cuma, 08:00 - 18:00</p>
+            </div>
+
+            <div class="contact-item">
+                <h3>Acil Durum Desteği</h3>
+                <p><strong>Telefon:</strong> +90 (532) 123 45 67</p>
+                <p><strong>E-posta:</strong> acil@pistonpaneli.com</p>
+                <p><strong>Destek Saatleri:</strong> 7/24 hizmet</p>
+            </div>
+        </div>
+
+        <h2>Teknik Destek Formu</h2>
+        <form class="contact-form">
+            <div class="form-group">
+                <label for="name">Adınız Soyadınız</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-posta Adresiniz</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Departman</label>
+                <input type="text" id="department" name="department" placeholder="Örn: Satış, Üretim, Muhasebe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Sorun Kategorisi</label>
+                <select id="subject" name="subject">
+                    <option value="login">Giriş Problemi</option>
+                    <option value="data">Veri Görüntüleme/Düzenleme</option>
+                    <option value="report">Rapor Oluşturma</option>
+                    <option value="system">Sistem Hatası</option>
+                    <option value="other">Diğer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Öncelik</label>
+                <select id="priority" name="priority">
+                    <option value="low">Düşük - İş akışını etkilemiyor</option>
+                    <option value="medium">Orta - İş akışını kısmen etkiliyor</option>
+                    <option value="high">Yüksek - İş akışını ciddi şekilde etkiliyor</option>
+                    <option value="critical">Kritik - Sistem kullanılamaz durumda</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Sorun Açıklaması</label>
+                <textarea id="message" name="message" placeholder="Lütfen karşılaştığınız sorunu detaylı bir şekilde açıklayın. Hata mesajları, ekran görüntüleri ve sorunun nasıl tekrarlanabileceği gibi bilgiler çözüm sürecini hızlandıracaktır." required></textarea>
+            </div>
+
+            <div>
+                <button type="submit" class="btn">Destek Talebi Gönder</button>
+            </div>
+        </form>
+    </div>
+
+    <a href="{% url 'admin:index' %}" class="back-link">← Yönetim Paneline Dön</a>
+</body>
+</html>
