@@ -71,7 +71,7 @@ JAZZMIN_SETTINGS = {
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_brand": "Piston Paneli",
     # Logo to use for your site, must be present in static files, used for brand on top left
-    # "site_logo": "books/img/logo.png",
+    "site_logo": "admin-interface/logo/png-clipart-piston-drawing-design-logo-cartoon-thumbnail.png",
     # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
     # Welcome text on the login screen
@@ -100,8 +100,7 @@ JAZZMIN_SETTINGS = {
     #############
     # Additional links to include in the user menu on the top right ("app" url type is not allowed)
     "usermenu_links": [
-        {"name": "Destek", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
-        {"name": "Profil", "url": "admin:auth_user_change", "id_querystring": True},
+        # Removed "Destek" and "Profil" links as per requirements
     ],
     #############
     # Side Menu #
@@ -141,10 +140,10 @@ JAZZMIN_SETTINGS = {
     # UI Tweaks #
     #############
     # Relative paths to custom CSS/JS scripts (must be present in static files)
-    "custom_css": None,
+    "custom_css": "custom/css/custom.css",
     "custom_js": None,
     # Whether to show the UI customizer on the sidebar
-    "show_ui_builder": True,
+    "show_ui_builder": False,
     ###############
     # Change view #
     ###############
@@ -156,7 +155,7 @@ JAZZMIN_SETTINGS = {
     # - carousel
     "changeform_format": "horizontal_tabs",
     # Add a language dropdown into the admin
-    "language_chooser": True,
+    "language_chooser": False,
     # Dashboard configuration
     "dashboard_preset": "collapsible",
     # Dashboard customization
