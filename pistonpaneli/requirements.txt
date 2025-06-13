@@ -1,9 +1,8 @@
-# Project dependencies
 Django>=5.2,<6.0
 django-colorfield>=0.10.0
-django-jazzmin>=3.0.1  # Admin panel theme
+django-jazzmin>=3.0.1
 
-# New dependencies for improvements
-django-import-export>=3.3.1  # For data export functionality
-WeasyPrint>=60.1  # PDF generation
-django-extensions>=3.2.3  # Useful development tools
+
+django-import-export>=3.3.1
+WeasyPrint>=60.1
+django-extensions>=3.2.3
