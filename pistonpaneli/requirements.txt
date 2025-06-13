@@ -25,3 +25,7 @@ beautifulsoup4==4.13.4
 python-slugify==8.0.4
 matplotlib==3.8.4
 numpy==1.26.4
+
+# Paket oluşturma ve dağıtım araçları
+setuptools==69.2.0
+wheel==0.43.0
