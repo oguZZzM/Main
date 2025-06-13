@@ -1,1 +1,0 @@
-web: gunicorn stok_sistemi.wsgi:application
