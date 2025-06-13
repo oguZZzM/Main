@@ -29,3 +29,8 @@ numpy==1.26.4
 # Paket oluşturma ve dağıtım araçları
 setuptools==70.0.0
 wheel==0.43.0
+
+# Kimlik doğrulama ve kullanıcı yönetimi
+django-allauth==0.61.1
+django-crispy-forms==2.1
+django-registration==3.4

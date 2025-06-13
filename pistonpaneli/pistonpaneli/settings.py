@@ -43,6 +43,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/admin/'
 # Application definition
 
 INSTALLED_APPS = [
@@ -294,4 +295,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For developm
 # Default email settings
 DEFAULT_FROM_EMAIL = 'pistonpaneli@example.com'
 ADMIN_EMAIL = 'admin@example.com'
-
