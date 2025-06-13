@@ -40,7 +40,7 @@ SECRET_KEY = 'django-insecure-@+e8jk$jf(&i@wc#o-=3jhv0$r@yp(dntg6$5q(dk_+yqe_=2%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.onrender.com', 'localhost']
 
 LOGIN_URL = '/admin/login/'
 # Application definition
@@ -61,6 +61,9 @@ INSTALLED_APPS = [
 
 
 ]
+
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Jazzmin settings
 JAZZMIN_SETTINGS = {
