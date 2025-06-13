@@ -1,16 +1,16 @@
-Django==5.2.3
+Django==5.2.4
 gunicorn==23.0.0
-psycopg2-binary==2.9.10
+psycopg2-binary==2.9.11
 python-dotenv==1.1.0
 
 # Admin ve UI
-django-jazzmin==3.0.1
-django-import-export==4.3.7
+django-jazzmin==3.0.2
+django-import-export==4.3.8
 django-colorfield==0.14.0
-django-extensions==4.1
+django-extensions==4.3.0
 
 # PDF üretimi için
-weasyprint==65.1
+weasyprint==65.2
 tinycss2==1.4.0
 cssselect2==0.8.0
 pyphen==0.17.2
@@ -23,9 +23,9 @@ schedule==1.2.2
 soupsieve==2.7
 beautifulsoup4==4.13.4
 python-slugify==8.0.4
-matplotlib==3.8.4
+matplotlib==3.9.0
 numpy==1.26.4
 
 # Paket oluşturma ve dağıtım araçları
-setuptools==69.2.0
+setuptools==70.0.0
 wheel==0.43.0
